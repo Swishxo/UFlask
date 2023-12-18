@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %} Homepage {% endblock %}
+
+{% block content %}
+<h1>Hello {{ name }}. Your now on the index!</h1>
+
+<h1>Database Results</h1>
+{% for item in result %}
+    <h2>ID: {{ item[0] }} Name: {{ item[1] }} Location: {{ item[2] }} </h2>
+{% endfor %}
+
+{% if display %}
+    <h1>This is the Display</h1>
+{% else %}
+    <h2>Not being displayed</h2>
+{% endif%}
+
+{% for x in myList %}
+
+<h3>{{ x }}</h3>
+
+{% endfor %}
+
+{% for x in listOfDicts %}
+    <h4>{{ x.name }}</h4>
+{% endfor %}
+
+<img src="{{ url_for('static', filename='money.jpg') }}" alt="">
+{% include "include_this.html" %}
+{% endblock %}

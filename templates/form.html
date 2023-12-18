@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Personal Form {% endblock %}
+    
+{% block content %}
+    <h1>Please, fillout the form</h1>
+    <form method="POST" action="/theform">
+        <input type="text" name="name">
+        <input type="text" name="location">
+        <input type="submit" Value="Submit">
+    </form>
+{% endblock %}
+
+
+
+

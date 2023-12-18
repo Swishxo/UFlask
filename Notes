@@ -1,0 +1,317 @@
+
+1. Creating a Virtual enviroment
+
+Activate virtual env:
+    Create virtual env: python -m venv (env)
+    Go to project: cd to (project)
+    Go to Scripts: cd to Scripts
+    use: . activate
+        Stop env: 
+            cd Scripts
+            deactivate
+
+
+2. Two methods to start python app
+
+method 1: in app file
+    if__name__=='__main__':
+        app.run()
+
+method 2: in terminal
+    export FLASK_APP=~name of python file~
+    flask run
+
+        put app in debug mode:
+            export FLASK_DEBUG=1
+
+
+3. Sending and Recieving data from webpage
+
+    methods=['GET', 'POST']
+        GET requests are intended to retrieve data from a server
+        POST requests are used to send data to the server for processing
+
+4. Getting attributes from user
+
+    from flask import 'request'
+
+    var = request.args.get('attribute')
+
+5. Forms
+
+    create a route and function to make a form
+    create a form to retrieve user input
+        options:
+            you could process form with ~request~ in the same function
+            or
+            create a route and function that uses the data with ~request~
+
+6. redirect & url_for: 
+
+    redirect(): allows developers to redirect users to a specified URL and assign a status code.
+
+    url_for(): a function that enables developers to build and generate URLs on a Flask application. 
+
+        Hint: put the name of a funtion as a String in                        redirect(url_for('FUNCTION'))
+
+        Hint: also you can pass data into 
+        redirect(url_for('FUNCTION', var=~data~))
+
+        @app.route('/')
+        def index():
+            return '<h1>Welcome to home Page</h1>'
+
+        @app.route(/form)
+        def form():
+            <form>
+                ~data~
+                ~data~
+                ~data~
+            </form>
+            return redirect(url_for('index', var=~data~))
+
+7. render_template(): takes the name of the template file as its only argument and returns the rendered HTML as a string.
+
+    import render_template
+    Make a ~templates~ folder in project dir
+    In the ~templates~ folder add your html file
+    Can also pass variables
+
+    @app.route('/theform')
+    def form():
+        ~data~
+        ~data~
+        return render_template('file.html', var=~data~)
+
+
+    Access variable in html using Jinja ex: <h1>{{ var }}</h1>
+
+8. Logic in Jinja: is with {% %}. Not to be confused with {{}} which is used for varibales.
+
+    Example:
+
+        {{% for i in num %}}
+            <p> i </p>
+        {{% endfor %}}
+
+        {{% for x in listOfDicts %}}
+            {{ x.name }}
+        {{% endfor %}}
+
+    To access dictionary use dot notation and ~KEY~ to access the VALUES.
+    And also make to sure to halt conditional with ~end~
+
+9. Static Files: are files that do not change over time. They include files such as HTML, CSS, JavaScript, and images.
+
+    First, create a folder called static in your project main dir.
+    Add your static file, here we used a jpg image.
+    Create an img tag and add <img src="{{ url_for() }}" alt="">
+    Within ~urlfor()~ add the ~static~ folder directory ~url_for('static')~
+    Next, add the static file you want to display: 
+    url_for('static', filename='money.jpg')
+    
+    If your static dir is broken up into other dir. Prefix where the image is with dir name. 
+    
+    Example of directory setup:
+
+     >env dir
+     >static dir
+        >images dir
+            -money.jpg file
+     >template dir
+
+     used with url_for():
+
+        <img src="url_for('static', filename='images/money.jpg')">
+
+        As you can see ~images/~ prefix ~money.jpg~ 
+        EX: images/money.jpg
+
+
+10. Template Inheritance: allows you to build a base “skeleton” template that contains all the common elements of your site and defines blocks that child templates can override.
+
+    To define a block, you use the {% block %} and {% endblock %} tags.
+    each block must be identified with a unique name
+
+    {% block title %}
+        <h1>This is the title</h1>
+    {% endblock %}
+
+    {% block content %}
+        <h1>This is the content</h1>
+    {% endblock %}
+
+    In a child file that is html, you can inherit from base. Using:
+
+    {% extends 'base.html' %}
+
+    Now we can use the ~blocks~ created in base.html within the child file.
+
+11. include function: is used to render a template that is included in another template. This can be useful for reusing common code or for creating templates
+ that can be easily customized. 
+
+    Example:
+
+        {% include "~fileName.html~ %}
+
+        Anywhere this is added contents of the fileName will be displayed. Think of it as ( injecting data in a specified spot )
+
+        Hint: You also have acccess to the variables of the class where you use ~include~.
+        
+        Example: 
+            if ~file1.html~ has variables and we {% include "file2.html" %} data into. Then ~file2.html~ has access to ~file1.html~ variables.
+
+
+12. Database: used to continously store data 
+
+        First, download sqlite from offical site
+        Second, extract folder and change name to something simple ~sqlite3~
+        Third, add extracted folder to system enviroment variable
+        Finally, check CMD by typing ~sqlite3~
+        Type .quite to end db
+
+        create a database by going to CMD and typing sqlite3 data.db ( you will auto connect to data.db)
+        Next, create a table : 
+            
+            create table users(id integer primary key autoincrement, name text, location text);
+
+            Hint: can check for tables by using ~ .tables ~ in CMD while connected to the database.
+
+        Now we insert data into the users table we just created:
+
+            insert into users (name, location) values ('Steph', 'NYC');
+
+            Breakdown:
+
+                First, insert data into a specified table ~ insert into users ~
+                Second, specify which colums to insert data into ~ (name, location) ~
+                Finally, ~ values ~ allows for data to be stored ~ ('Steph', 'NYC'); ~
+
+            Check to see if data was inserted properly:
+
+                select * from users;
+
+            Now that the data has been inserted exit the database:
+
+                .exit
+
+13. Connecting to the Database:
+
+            First, import sqlite3
+            Second, store database in a obj
+            Third, use obj to execute query statement
+            Finally, close the obj
+
+            Example:
+
+            connect = sqlite3.connect('database.db')
+            connect.execute('CREATE TABLE IF NOT EXISTS users(id INTEGER primary key autoincrement, name TEXT, location TEXT)')
+            connect.close()
+
+            Next, we access the database to utilize data:
+
+                First, create a url route and function
+                Second, create a new sqlite3 obj and connect to the database
+                Third, using obj ~execute~ statement to get data
+                Fourth, use obj to ~commit~ statement
+            
+            Finally, display data from database:
+
+                First, create variables to store data. Only stores max # of columns created for table 
+                Second, create a loop, to loop through ~cursor~ ( cursor is used only to retrieve data )
+                Third, variable created in loop is now a dict and values can only be accessed by the key. Each column in table is indexed
+                Finally, when done close the database
+
+                    Ex: 
+                        id == row[0] 
+                        name == row[1] 
+                        location == row[2] 
+
+                    Code Ex:
+                        connect = sqlite3.connect('database.db')
+                        cursor = connect.execute("SELECT id, name, location from users")
+
+                        for row in cursor:
+                            id = row[0]
+                            name = row[1]
+                            location = row[2]
+                        connect.close()
+
+14. Inserting into Database:
+
+            First, create obj to connect to database
+            Second, use obj ~execute~ to create a query String
+            Third, create statement to insert data 
+            Finally, use obj to ~commit~ statment
+
+            Example: 
+
+            connect = sqlite3.connect('database.db')
+            connect.execute('''INSERT INTO users(name,location) VALUES (?, ?)''', (name, location))
+            connect.commit()
+
+            Hint:
+                Notice, ~Values (?, ?)~ 
+                The ~?~ is used as placeholders and also stop sql injection
+                After sql query ~Values (?, ?)~ you can insert the data as either a tuple or a list 
+                    Ex:  '''INSERT INTO users(name,location) VALUES (?, ?)''', (name, location)
+
+
+15. Acessing database in Jinja:
+
+            First, create a variable to store ~cursor.fetchall()~ database retrieval
+            Second, pass the var storing the data to template. Var is passed as a ~list~ of ~tuples~
+            Third, create blocks within html to loop through the data
+            Finally, display the data as you see
+
+            Hint: In order to access the data, use the var[key]
+
+            Example:
+
+                -Creating connection to DB and inserting data- 
+
+                    connect = sqlite3.connect('database.db')
+                    connect = insert_db('P', 'FL')
+
+                -Executing query statement and storing the data- 
+
+                    cursor = connect.execute("SELECT * FROM users")
+
+                -Fetch all data and store the results in a var- 
+
+                    result = cursor.fetchall()
+
+                -Close connection and pass the results to desired html page- 
+
+                    connect.close()
+
+                    return render_template('index.html', result=result)
+
+                -Within HTML file you passed the data to- 
+
+                    {% for items in result %}
+                        <h1>id: {{ items[0] }} name: {{ items[1] }}, location: {{ items[2] }}</h1>
+                    {% endfor %}
+
+                Hint:
+                    The key for each item corresponds to the columns created to store the data.
+
+                        item[0] == id Column 
+                        item[1] == name 
+                        item[2] == location 
+
+16. 
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
